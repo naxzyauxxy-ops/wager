@@ -1,0 +1,40 @@
+name: HavocCasino
+version: '${project.version}'
+main: net.havoccasino.HavocCasino
+api-version: '1.21'
+authors: [Havoc]
+description: Premium casino games — slots and a progressive jackpot.
+website: https://havoccasino.example
+softdepend: [Vault, PlaceholderAPI]
+
+commands:
+  slots:
+    description: Spin the slot machine.
+    usage: /slots <bet> [money|rubies]
+  mines:
+    description: Play a round of mines.
+    usage: /mines <bet> [mines] [money|rubies]
+  jackpot:
+    description: View or enter the progressive jackpot.
+    usage: /jackpot [bet]
+  havoccasino:
+    description: Admin commands for HavocCasino.
+    usage: /havoccasino <reload|rubies|jackpot|messages>
+    aliases: [hcasino, hc]
+
+permissions:
+  havoccasino.slots:
+    description: Allows playing slots.
+    default: true
+  havoccasino.mines:
+    description: Allows playing mines.
+    default: true
+  havoccasino.jackpot:
+    description: Allows entering the jackpot.
+    default: true
+  havoccasino.messages:
+    description: Allows toggling your own HavocCasino messages.
+    default: true
+  havoccasino.admin:
+    description: Allows managing HavocCasino.
+    default: op

@@ -1,0 +1,43 @@
+# ============================================================
+#  HavocCasino  •  configuration
+# ============================================================
+
+currency:
+  # Used when the player doesn't specify a currency.
+  # Options: money (requires Vault) or rubies (built-in virtual currency)
+  default: money
+  money-symbol: "$"
+  ruby-name: "Rubies"
+
+betting:
+  min-bet: 10
+  max-bet: 10000
+
+slots:
+  # Multiplier paid when exactly two of the three reels match.
+  two-match-multiplier: 1.5
+  # Informational only — the true edge comes from the symbol weights in code.
+  house-edge-info: 0.05
+
+mines:
+  # Board is a fixed 5x5 (25 tiles). These bound the mine count a player may pick.
+  default-mines: 3
+  min-mines: 1
+  max-mines: 24
+  # 0.0 - 1.0. Shaves this fraction off the fair cash-out multiplier.
+  house-edge: 0.03
+
+jackpot:
+  # Currency the jackpot pool is tracked in: money or rubies
+  currency: money
+  # Pool value that remains after someone wins.
+  seed: 1000
+  # Fraction of each entry added to the pool (the remainder is house rake).
+  contribution-percent: 0.85
+  # Chance (0.0 - 1.0) that a single entry wins the entire pool.
+  win-chance: 0.02
+  # Minimum amount required to enter.
+  min-entry: 50
+
+messages:
+  prefix: "<gradient:#f7971e:#ffd200><bold>HavocCasino</bold></gradient> <dark_gray>»</dark_gray> "

@@ -1,0 +1,39 @@
+# ============================================================
+#  HavocCasino  •  messages
+# ------------------------------------------------------------
+#  Supports MiniMessage formatting (<green>, <bold>, <gradient>…)
+#  and placeholders:
+#    • internal tokens: {amount} {multiplier} {player} {pool} {chance}
+#    • PlaceholderAPI %...% placeholders (when PlaceholderAPI is installed),
+#      e.g. %havoccasino_rubies%, %havoccasino_jackpot%, %havoccasino_messages%,
+#      or any placeholder from another expansion like %player_name%.
+#
+#  Players can turn these messages on/off for themselves with /hc messages.
+# ============================================================
+
+slots:
+  win: "<green>You won <bold>{amount}</bold>! <gray>(x{multiplier})"
+  lose: "<red>No match this time. <gray>You lost {amount}."
+
+mines:
+  cashout: "<green>Cashed out <bold>{amount}</bold>! <gray>(x{multiplier})"
+  board-cleared: "<green><bold>Board cleared!</bold> You won <bold>{amount}</bold>! <gray>(x{multiplier})"
+  boom: "<red>Boom! You hit a mine and lost {amount}."
+  auto-cashout: "<green>Auto cashed out <bold>{amount}</bold> <gray>(x{multiplier}) on close."
+  refund: "<gray>Mines round cancelled — your bet of {amount} was refunded."
+  cashout-need-reveal: "<gray>Reveal at least one tile before cashing out."
+
+jackpot:
+  info-pool: "<gold>Current jackpot: <bold>{pool}"
+  info-howto: "<gray>Enter with <white>/jackpot <bet><gray> for a <white>{chance}%<gray> chance to win it all."
+  win-broadcast: "<gradient:#FFD700:#FF8C00><bold>JACKPOT!</bold></gradient> <yellow>{player} <white>just won <gold>{amount}<white>!"
+  lose: "<red>No luck this time. <gray>The jackpot is now <gold>{pool}<gray>."
+
+settings:
+  gui-title: "<dark_gray>✦ <gold>Message Settings</gold> ✦"
+  toggle-on-name: "<green><bold>Messages: ON</bold>"
+  toggle-on-lore: "<gray>Click to turn <red>OFF</red>."
+  toggle-off-name: "<red><bold>Messages: OFF</bold>"
+  toggle-off-lore: "<gray>Click to turn <green>ON</green>."
+  enabled: "<green>HavocCasino messages are now <bold>ON</bold>."
+  disabled: "<red>HavocCasino messages are now <bold>OFF</bold>."
