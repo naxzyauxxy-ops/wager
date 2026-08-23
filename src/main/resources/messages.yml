@@ -30,7 +30,7 @@ jackpot:
   lose: "<red>No luck this time. <gray>The jackpot is now <gold>{pool}<gray>."
 
 crates:
-  list-header: "<gold><bold>Crates</bold> <gray>— open with <white>/crates <name>"
+  list-header: "<gold><bold>Crates</bold> <gray>— open with <white>/gcrate <name>"
   list-entry: "<gray>• <white>{crate} <gray>(<white>{id}<gray>) — cost <yellow>{cost}"
   unknown: "<red>There is no crate named '<white>{name}</white>'."
   win: "<green>{crate} <gray>» <bold>{reward}</bold> <green>— you won <bold>{amount}</bold>! <gray>(x{multiplier})"

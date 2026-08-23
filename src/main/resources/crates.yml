@@ -11,8 +11,8 @@
 #  crates below are tuned to roughly a 5% edge:
 #    Common expected return = sum(weight*multiplier)/sum(weight) ≈ 0.95
 #
-#  Open with:  /crates <id>     e.g. /crates common
-#  List with:  /crates
+#  Open with:  /gcrate <id>     e.g. /gcrate common
+#  List with:  /gcrate
 # ============================================================
 
 crates:

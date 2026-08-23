@@ -67,9 +67,9 @@ public final class HavocCasino extends JavaPlugin {
         registerCommand("mines", new MinesCommand(this));
         registerCommand("jackpot", new JackpotCommand(this));
         CratesCommand cratesCommand = new CratesCommand(this);
-        registerCommand("crates", cratesCommand);
-        if (getCommand("crates") != null) {
-            getCommand("crates").setTabCompleter(cratesCommand);
+        registerCommand("gcrate", cratesCommand);
+        if (getCommand("gcrate") != null) {
+            getCommand("gcrate").setTabCompleter(cratesCommand);
         }
         HavocCasinoCommand admin = new HavocCasinoCommand(this);
         registerCommand("havoccasino", admin);

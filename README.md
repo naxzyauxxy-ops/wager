@@ -8,7 +8,7 @@ board, and a progressive jackpot, all played with server **money** via Vault.
 - `/slots <bet>` — animated 3-reel slot GUI with weighted symbols and payouts.
 - `/mines <bet> [mines]` — reveal tiles on a 5x5 board; the multiplier climbs with each safe tile, cash out any time before hitting a mine.
 - `/jackpot [bet]` — progressive pool; each entry feeds the pot and rolls for the whole thing.
-- `/crates [name]` — CS:GO-style crate opening: pay the crate cost, watch the reel spin, and win a weighted money multiple (or bust). Crates are defined in `crates.yml`.
+- `/gcrate [name]` — CS:GO-style crate opening: pay the crate cost, watch the reel spin, and win a weighted money multiple (or bust). Crates are defined in `crates.yml`.
 - `/havoccasino` (`/hc`) — admin: reload config and manage the jackpot pool.
 - MiniMessage-styled output, configurable bets, weights, odds and prefix.
 - **Customizable messages** in `messages.yml` with placeholders (internal `{tokens}` + PlaceholderAPI).
@@ -101,6 +101,6 @@ weights vs. multipliers to set the house edge; the defaults sit near 5%.
 | `havoccasino.slots`  | true    | `/slots`                  |
 | `havoccasino.mines`  | true    | `/mines`                  |
 | `havoccasino.jackpot`| true    | `/jackpot`                |
-| `havoccasino.crates` | true    | `/crates`                 |
+| `havoccasino.crates` | true    | `/gcrate`                 |
 | `havoccasino.messages`| true   | `/hc messages` (self)     |
 | `havoccasino.admin`  | op      | `/havoccasino` admin cmds |

@@ -18,10 +18,10 @@ commands:
   jackpot:
     description: View or enter the progressive jackpot.
     usage: /jackpot [bet]
-  crates:
-    description: Browse and open gambling crates.
-    usage: /crates [name]
-    aliases: [crate]
+  gcrate:
+    description: Browse and open HavocCasino gambling crates.
+    usage: /gcrate [name]
+    aliases: [gcrates]
   havoccasino:
     description: Admin commands for HavocCasino.
     usage: /havoccasino <reload|jackpot|messages>
