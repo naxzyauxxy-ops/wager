@@ -1,7 +1,6 @@
 package net.havoccasino.config;
 
 import net.havoccasino.HavocCasino;
-import net.havoccasino.economy.CurrencyType;
 import org.bukkit.configuration.file.FileConfiguration;
 
 /**
@@ -11,9 +10,7 @@ public final class CasinoConfig {
 
     private final HavocCasino plugin;
 
-    private CurrencyType defaultCurrency;
     private String moneySymbol;
-    private String rubyName;
     private double minBet;
     private double maxBet;
     private double slotTwoMatchMultiplier;
@@ -21,7 +18,6 @@ public final class CasinoConfig {
     private int minesMin;
     private int minesMax;
     private double minesHouseEdge;
-    private CurrencyType jackpotCurrency;
     private double jackpotSeed;
     private double jackpotRake;
     private double jackpotWinChance;
@@ -36,9 +32,7 @@ public final class CasinoConfig {
         plugin.reloadConfig();
         FileConfiguration c = plugin.getConfig();
 
-        defaultCurrency = CurrencyType.fromString(c.getString("currency.default", "money"), CurrencyType.MONEY);
         moneySymbol = c.getString("currency.money-symbol", "$");
-        rubyName = c.getString("currency.ruby-name", "Rubies");
 
         minBet = c.getDouble("betting.min-bet", 10);
         maxBet = c.getDouble("betting.max-bet", 10000);
@@ -50,7 +44,6 @@ public final class CasinoConfig {
         minesMax = c.getInt("mines.max-mines", 24);
         minesHouseEdge = c.getDouble("mines.house-edge", 0.03);
 
-        jackpotCurrency = CurrencyType.fromString(c.getString("jackpot.currency", "money"), CurrencyType.MONEY);
         jackpotSeed = c.getDouble("jackpot.seed", 1000);
         jackpotRake = c.getDouble("jackpot.contribution-percent", 0.85);
         jackpotWinChance = c.getDouble("jackpot.win-chance", 0.02);
@@ -60,16 +53,8 @@ public final class CasinoConfig {
                 "<gradient:#f7971e:#ffd200><bold>HavocCasino</bold></gradient> <dark_gray>»</dark_gray> ");
     }
 
-    public CurrencyType defaultCurrency() {
-        return defaultCurrency;
-    }
-
     public String moneySymbol() {
         return moneySymbol;
-    }
-
-    public String rubyName() {
-        return rubyName;
     }
 
     public double minBet() {
@@ -98,10 +83,6 @@ public final class CasinoConfig {
 
     public double minesHouseEdge() {
         return minesHouseEdge;
-    }
-
-    public CurrencyType jackpotCurrency() {
-        return jackpotCurrency;
     }
 
     public double jackpotSeed() {

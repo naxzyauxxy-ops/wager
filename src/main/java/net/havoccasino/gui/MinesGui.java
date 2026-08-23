@@ -2,7 +2,6 @@ package net.havoccasino.gui;
 
 import net.kyori.adventure.text.Component;
 import net.havoccasino.HavocCasino;
-import net.havoccasino.economy.CurrencyType;
 import net.havoccasino.util.Msg;
 import net.havoccasino.util.Numbers;
 import org.bukkit.Bukkit;
@@ -42,7 +41,6 @@ public final class MinesGui {
     private final HavocCasino plugin;
     private final Player player;
     private final double bet;
-    private final CurrencyType currency;
     private final int mines;
     private final double houseEdge;
     private final Inventory inventory;
@@ -55,12 +53,11 @@ public final class MinesGui {
     private int safeRevealed = 0;
     private boolean finished = false;
 
-    public MinesGui(HavocCasino plugin, Player player, double bet, CurrencyType currency,
+    public MinesGui(HavocCasino plugin, Player player, double bet,
                     int mines, double houseEdge) {
         this.plugin = plugin;
         this.player = player;
         this.bet = bet;
-        this.currency = currency;
         this.mines = mines;
         this.houseEdge = houseEdge;
 
@@ -101,11 +98,11 @@ public final class MinesGui {
         }
         finished = true;
         if (safeRevealed == 0) {
-            plugin.currencyService().deposit(player, currency, bet);
+            plugin.currencyService().deposit(player, bet);
             plugin.messages().send(player, "mines.refund", "amount", fmt(bet));
         } else {
             double payout = bet * currentMultiplier();
-            plugin.currencyService().deposit(player, currency, payout);
+            plugin.currencyService().deposit(player, payout);
             plugin.messages().send(player, "mines.auto-cashout",
                     "amount", fmt(payout), "multiplier", Numbers.trim(currentMultiplier()));
         }
@@ -127,7 +124,7 @@ public final class MinesGui {
         if (safeRevealed >= TOTAL_TILES - mines) {
             finished = true;
             double payout = bet * currentMultiplier();
-            plugin.currencyService().deposit(player, currency, payout);
+            plugin.currencyService().deposit(player, payout);
             plugin.messages().send(player, "mines.board-cleared",
                     "amount", fmt(payout), "multiplier", Numbers.trim(currentMultiplier()));
             if (player.isOnline()) {
@@ -159,7 +156,7 @@ public final class MinesGui {
         }
         finished = true;
         double payout = bet * currentMultiplier();
-        plugin.currencyService().deposit(player, currency, payout);
+        plugin.currencyService().deposit(player, payout);
         plugin.messages().send(player, "mines.cashout",
                 "amount", fmt(payout), "multiplier", Numbers.trim(currentMultiplier()));
         if (player.isOnline()) {
@@ -277,7 +274,7 @@ public final class MinesGui {
     // ---- helpers ----
 
     private String fmt(double amount) {
-        return plugin.currencyService().format(currency, amount);
+        return plugin.currencyService().format(amount);
     }
 
     private void playRevealSound() {

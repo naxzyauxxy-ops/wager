@@ -1,7 +1,6 @@
 package net.havoccasino.gui;
 
 import net.havoccasino.HavocCasino;
-import net.havoccasino.economy.CurrencyType;
 import net.havoccasino.game.SlotResult;
 import net.havoccasino.game.SlotSymbol;
 import net.havoccasino.util.Msg;
@@ -32,15 +31,13 @@ public final class SlotGui {
     private final Player player;
     private final SlotResult result;
     private final double bet;
-    private final CurrencyType currency;
     private final Inventory inventory;
 
-    public SlotGui(HavocCasino plugin, Player player, SlotResult result, double bet, CurrencyType currency) {
+    public SlotGui(HavocCasino plugin, Player player, SlotResult result, double bet) {
         this.plugin = plugin;
         this.player = player;
         this.result = result;
         this.bet = bet;
-        this.currency = currency;
 
         SlotHolder holder = new SlotHolder();
         this.inventory = Bukkit.createInventory(holder, WINDOW_SIZE, Msg.parse("<dark_gray>✦ <gold>Royal Slots</gold> ✦"));
@@ -93,19 +90,19 @@ public final class SlotGui {
 
     private void settle() {
         if (result.win()) {
-            plugin.currencyService().deposit(player, currency, result.payout());
+            plugin.currencyService().deposit(player, result.payout());
             if (player.isOnline()) {
                 player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 1.2f);
             }
             plugin.messages().send(player, "slots.win",
-                    "amount", plugin.currencyService().format(currency, result.payout()),
+                    "amount", plugin.currencyService().format(result.payout()),
                     "multiplier", Numbers.trim(result.multiplier()));
         } else {
             if (player.isOnline()) {
                 player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1f, 0.8f);
             }
             plugin.messages().send(player, "slots.lose",
-                    "amount", plugin.currencyService().format(currency, bet));
+                    "amount", plugin.currencyService().format(bet));
         }
     }
 

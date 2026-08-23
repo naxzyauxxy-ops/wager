@@ -1,13 +1,14 @@
 package net.havoccasino;
 
 import net.havoccasino.command.JackpotCommand;
+import net.havoccasino.command.CratesCommand;
 import net.havoccasino.command.MinesCommand;
 import net.havoccasino.command.HavocCasinoCommand;
 import net.havoccasino.command.SlotsCommand;
 import net.havoccasino.config.CasinoConfig;
 import net.havoccasino.economy.CurrencyService;
-import net.havoccasino.economy.RubyStore;
 import net.havoccasino.economy.VaultHook;
+import net.havoccasino.game.CrateManager;
 import net.havoccasino.game.JackpotManager;
 import net.havoccasino.game.SlotMachine;
 import net.havoccasino.gui.GuiListener;
@@ -24,10 +25,10 @@ public final class HavocCasino extends JavaPlugin {
 
     private CasinoConfig casinoConfig;
     private VaultHook vaultHook;
-    private RubyStore rubyStore;
     private CurrencyService currencyService;
     private SlotMachine slotMachine;
     private JackpotManager jackpotManager;
+    private CrateManager crateManager;
     private PlayerSettings playerSettings;
     private Messages messages;
 
@@ -45,20 +46,31 @@ public final class HavocCasino extends JavaPlugin {
         this.messages = new Messages(this);
         this.messages.load();
 
-        this.rubyStore = new RubyStore(this);
-        this.rubyStore.load();
-
         this.vaultHook = new VaultHook(this);
         this.vaultHook.setup();
+        if (!this.vaultHook.isEnabled()) {
+            getLogger().severe("Vault economy not found. HavocCasino needs Vault plus an "
+                    + "economy plugin (e.g. EssentialsX). Disabling.");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
 
-        this.currencyService = new CurrencyService(this.vaultHook, this.rubyStore, this.casinoConfig);
+        this.currencyService = new CurrencyService(this.vaultHook, this.casinoConfig);
         this.slotMachine = new SlotMachine(this.casinoConfig);
         this.jackpotManager = new JackpotManager(this, this.casinoConfig, this.currencyService);
         this.jackpotManager.load();
 
+        this.crateManager = new CrateManager(this);
+        this.crateManager.load();
+
         registerCommand("slots", new SlotsCommand(this));
         registerCommand("mines", new MinesCommand(this));
         registerCommand("jackpot", new JackpotCommand(this));
+        CratesCommand cratesCommand = new CratesCommand(this);
+        registerCommand("crates", cratesCommand);
+        if (getCommand("crates") != null) {
+            getCommand("crates").setTabCompleter(cratesCommand);
+        }
         HavocCasinoCommand admin = new HavocCasinoCommand(this);
         registerCommand("havoccasino", admin);
         if (getCommand("havoccasino") != null) {
@@ -76,15 +88,11 @@ public final class HavocCasino extends JavaPlugin {
             }
         }
 
-        getLogger().info("HavocCasino enabled. Economy: "
-                + (vaultHook.isEnabled() ? "Vault linked" : "Vault not found (rubies only)"));
+        getLogger().info("HavocCasino enabled. Using Vault economy.");
     }
 
     @Override
     public void onDisable() {
-        if (rubyStore != null) {
-            rubyStore.save();
-        }
         if (jackpotManager != null) {
             jackpotManager.save();
         }
@@ -109,16 +117,16 @@ public final class HavocCasino extends JavaPlugin {
         return currencyService;
     }
 
-    public RubyStore rubyStore() {
-        return rubyStore;
-    }
-
     public SlotMachine slotMachine() {
         return slotMachine;
     }
 
     public JackpotManager jackpotManager() {
         return jackpotManager;
+    }
+
+    public CrateManager crateManager() {
+        return crateManager;
     }
 
     public PlayerSettings playerSettings() {

@@ -33,13 +33,18 @@ public final class GuiListener implements Listener {
             if (raw >= 0 && raw < event.getInventory().getSize() && settingsHolder.getGui() != null) {
                 settingsHolder.getGui().handleClick(raw);
             }
+            return;
+        }
+        if (holder instanceof CrateHolder) {
+            event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onDrag(InventoryDragEvent event) {
         InventoryHolder holder = event.getInventory().getHolder();
-        if (holder instanceof SlotHolder || holder instanceof MinesHolder || holder instanceof SettingsHolder) {
+        if (holder instanceof SlotHolder || holder instanceof MinesHolder
+                || holder instanceof SettingsHolder || holder instanceof CrateHolder) {
             event.setCancelled(true);
         }
     }

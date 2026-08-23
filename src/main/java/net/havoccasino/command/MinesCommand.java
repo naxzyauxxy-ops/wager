@@ -2,7 +2,6 @@ package net.havoccasino.command;
 
 import net.havoccasino.HavocCasino;
 import net.havoccasino.economy.CurrencyService;
-import net.havoccasino.economy.CurrencyType;
 import net.havoccasino.gui.MinesGui;
 import net.havoccasino.util.Msg;
 import net.havoccasino.util.Numbers;
@@ -32,7 +31,7 @@ public final class MinesCommand implements CommandExecutor {
             return true;
         }
         if (args.length == 0) {
-            Msg.send(player, "<gray>Usage: <white>/mines <bet> [mines] [money|rubies]");
+            Msg.send(player, "<gray>Usage: <white>/mines <bet> [mines]");
             return true;
         }
 
@@ -44,19 +43,13 @@ public final class MinesCommand implements CommandExecutor {
         double bet = parsed;
 
         int mines = plugin.casinoConfig().minesDefault();
-        CurrencyType currency = plugin.casinoConfig().defaultCurrency();
-
-        // args[1] may be the mine count (integer) or the currency (word).
         if (args.length >= 2) {
             Integer parsedMines = tryInt(args[1]);
-            if (parsedMines != null) {
-                mines = parsedMines;
-                if (args.length >= 3) {
-                    currency = CurrencyType.fromString(args[2], currency);
-                }
-            } else {
-                currency = CurrencyType.fromString(args[1], currency);
+            if (parsedMines == null) {
+                Msg.send(player, "<red>'" + args[1] + "' is not a valid mine count.");
+                return true;
             }
+            mines = parsedMines;
         }
 
         int minMines = Math.max(1, plugin.casinoConfig().minesMin());
@@ -68,29 +61,24 @@ public final class MinesCommand implements CommandExecutor {
         }
 
         CurrencyService bank = plugin.currencyService();
-        if (!bank.isAvailable(currency)) {
-            Msg.send(player, "<red>That currency isn't available on this server.");
-            return true;
-        }
-
         double min = plugin.casinoConfig().minBet();
         double max = plugin.casinoConfig().maxBet();
         if (bet < min || bet > max) {
-            Msg.send(player, "<red>Bet must be between <white>" + bank.format(currency, min)
-                    + " <red>and <white>" + bank.format(currency, max) + "<red>.");
+            Msg.send(player, "<red>Bet must be between <white>" + bank.format(min)
+                    + " <red>and <white>" + bank.format(max) + "<red>.");
             return true;
         }
-        if (!bank.has(player, currency, bet)) {
+        if (!bank.has(player, bet)) {
             Msg.send(player, "<red>You can't afford that bet. Balance: <white>"
-                    + bank.format(currency, bank.balance(player, currency)));
+                    + bank.format(bank.balance(player)));
             return true;
         }
-        if (!bank.withdraw(player, currency, bet)) {
+        if (!bank.withdraw(player, bet)) {
             Msg.send(player, "<red>Transaction failed. Try again.");
             return true;
         }
 
-        new MinesGui(plugin, player, bet, currency, mines, plugin.casinoConfig().minesHouseEdge()).open();
+        new MinesGui(plugin, player, bet, mines, plugin.casinoConfig().minesHouseEdge()).open();
         return true;
     }
 

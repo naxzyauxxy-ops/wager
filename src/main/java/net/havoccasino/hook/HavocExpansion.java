@@ -14,7 +14,6 @@ import org.jetbrains.annotations.NotNull;
  * is installed — always guard access behind {@link Papi#AVAILABLE}.
  *
  * Provided placeholders:
- *   %havoccasino_rubies%       -> player's ruby balance
  *   %havoccasino_jackpot%      -> formatted jackpot pool
  *   %havoccasino_jackpot_raw%  -> raw jackpot pool
  *   %havoccasino_messages%     -> ON / OFF (this player's message preference)
@@ -61,11 +60,8 @@ public final class HavocExpansion extends PlaceholderExpansion {
     @Override
     public String onRequest(OfflinePlayer player, @NotNull String params) {
         switch (params.toLowerCase()) {
-            case "rubies":
-                return String.valueOf(player == null ? 0 : plugin.rubyStore().get(player.getUniqueId()));
             case "jackpot":
-                return plugin.currencyService().format(
-                        plugin.casinoConfig().jackpotCurrency(), plugin.jackpotManager().pool());
+                return plugin.currencyService().format(plugin.jackpotManager().pool());
             case "jackpot_raw":
                 return String.valueOf(plugin.jackpotManager().pool());
             case "messages":

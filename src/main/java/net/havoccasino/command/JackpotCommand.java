@@ -2,7 +2,6 @@ package net.havoccasino.command;
 
 import net.havoccasino.HavocCasino;
 import net.havoccasino.economy.CurrencyService;
-import net.havoccasino.economy.CurrencyType;
 import net.havoccasino.game.JackpotManager;
 import net.havoccasino.util.Msg;
 import net.havoccasino.util.Numbers;
@@ -33,13 +32,12 @@ public final class JackpotCommand implements CommandExecutor {
             return true;
         }
 
-        CurrencyType currency = plugin.casinoConfig().jackpotCurrency();
         CurrencyService bank = plugin.currencyService();
         JackpotManager jackpot = plugin.jackpotManager();
 
         if (args.length == 0) {
             plugin.messages().send(player, "jackpot.info-pool",
-                    "pool", bank.format(currency, jackpot.pool()));
+                    "pool", bank.format(jackpot.pool()));
             plugin.messages().send(player, "jackpot.info-howto",
                     "chance", Numbers.trim(plugin.casinoConfig().jackpotWinChance() * 100.0));
             return true;
@@ -54,19 +52,15 @@ public final class JackpotCommand implements CommandExecutor {
 
         double minEntry = plugin.casinoConfig().jackpotMinBet();
         if (bet < minEntry) {
-            Msg.send(player, "<red>Minimum entry is <white>" + bank.format(currency, minEntry) + "<red>.");
+            Msg.send(player, "<red>Minimum entry is <white>" + bank.format(minEntry) + "<red>.");
             return true;
         }
-        if (!bank.isAvailable(currency)) {
-            Msg.send(player, "<red>The jackpot currency isn't available on this server.");
-            return true;
-        }
-        if (!bank.has(player, currency, bet)) {
+        if (!bank.has(player, bet)) {
             Msg.send(player, "<red>You can't afford that. Balance: <white>"
-                    + bank.format(currency, bank.balance(player, currency)));
+                    + bank.format(bank.balance(player)));
             return true;
         }
-        if (!bank.withdraw(player, currency, bet)) {
+        if (!bank.withdraw(player, bet)) {
             Msg.send(player, "<red>Transaction failed. Try again.");
             return true;
         }
@@ -75,18 +69,18 @@ public final class JackpotCommand implements CommandExecutor {
         jackpot.save();
 
         if (outcome.won) {
-            bank.deposit(player, currency, outcome.amountWon);
+            bank.deposit(player, outcome.amountWon);
             if (player.isOnline()) {
                 player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
             }
-            String amount = bank.format(currency, outcome.amountWon);
+            String amount = bank.format(outcome.amountWon);
             for (Player online : plugin.getServer().getOnlinePlayers()) {
                 plugin.messages().send(online, "jackpot.win-broadcast",
                         "player", player.getName(), "amount", amount);
             }
         } else {
             plugin.messages().send(player, "jackpot.lose",
-                    "pool", bank.format(currency, outcome.newPool));
+                    "pool", bank.format(outcome.newPool));
         }
         return true;
     }

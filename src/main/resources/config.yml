@@ -3,11 +3,8 @@
 # ============================================================
 
 currency:
-  # Used when the player doesn't specify a currency.
-  # Options: money (requires Vault) or rubies (built-in virtual currency)
-  default: money
+  # All games use Vault money. This is just the display symbol.
   money-symbol: "$"
-  ruby-name: "Rubies"
 
 betting:
   min-bet: 10
@@ -28,8 +25,6 @@ mines:
   house-edge: 0.03
 
 jackpot:
-  # Currency the jackpot pool is tracked in: money or rubies
-  currency: money
   # Pool value that remains after someone wins.
   seed: 1000
   # Fraction of each entry added to the pool (the remainder is house rake).

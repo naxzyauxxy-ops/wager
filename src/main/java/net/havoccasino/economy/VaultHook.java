@@ -5,8 +5,8 @@ import net.havoccasino.HavocCasino;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 /**
- * Optional bridge to a Vault economy provider. If Vault is absent the plugin
- * still works with rubies only.
+ * Bridge to a Vault economy provider. Vault is required — the plugin disables
+ * itself on enable if no economy provider is registered.
  */
 public final class VaultHook {
 

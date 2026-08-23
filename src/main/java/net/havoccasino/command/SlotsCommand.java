@@ -2,7 +2,6 @@ package net.havoccasino.command;
 
 import net.havoccasino.HavocCasino;
 import net.havoccasino.economy.CurrencyService;
-import net.havoccasino.economy.CurrencyType;
 import net.havoccasino.game.SlotResult;
 import net.havoccasino.gui.SlotGui;
 import net.havoccasino.util.Msg;
@@ -33,7 +32,7 @@ public final class SlotsCommand implements CommandExecutor {
             return true;
         }
         if (args.length == 0) {
-            Msg.send(player, "<gray>Usage: <white>/slots <bet> [money|rubies]");
+            Msg.send(player, "<gray>Usage: <white>/slots <bet>");
             return true;
         }
 
@@ -44,35 +43,26 @@ public final class SlotsCommand implements CommandExecutor {
         }
         double bet = parsed;
 
-        CurrencyType currency = args.length >= 2
-                ? CurrencyType.fromString(args[1], plugin.casinoConfig().defaultCurrency())
-                : plugin.casinoConfig().defaultCurrency();
-
         CurrencyService bank = plugin.currencyService();
-        if (!bank.isAvailable(currency)) {
-            Msg.send(player, "<red>That currency isn't available on this server.");
-            return true;
-        }
-
         double min = plugin.casinoConfig().minBet();
         double max = plugin.casinoConfig().maxBet();
         if (bet < min || bet > max) {
-            Msg.send(player, "<red>Bet must be between <white>" + bank.format(currency, min)
-                    + " <red>and <white>" + bank.format(currency, max) + "<red>.");
+            Msg.send(player, "<red>Bet must be between <white>" + bank.format(min)
+                    + " <red>and <white>" + bank.format(max) + "<red>.");
             return true;
         }
-        if (!bank.has(player, currency, bet)) {
+        if (!bank.has(player, bet)) {
             Msg.send(player, "<red>You can't afford that bet. Balance: <white>"
-                    + bank.format(currency, bank.balance(player, currency)));
+                    + bank.format(bank.balance(player)));
             return true;
         }
-        if (!bank.withdraw(player, currency, bet)) {
+        if (!bank.withdraw(player, bet)) {
             Msg.send(player, "<red>Transaction failed. Try again.");
             return true;
         }
 
         SlotResult result = plugin.slotMachine().spin(bet);
-        new SlotGui(plugin, player, result, bet, currency).open();
+        new SlotGui(plugin, player, result, bet).open();
         return true;
     }
 }

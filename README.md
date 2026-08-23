@@ -1,16 +1,15 @@
 # HavocCasino
 
 Casino games for **Purpur / Paper 1.21.x** — an animated slot machine, a mines
-board, and a progressive jackpot, playable with **money** (via Vault) or built-in
-**rubies**.
+board, and a progressive jackpot, all played with server **money** via Vault.
 
 ## Features
 
-- `/slots <bet> [money|rubies]` — animated 3-reel slot GUI with weighted symbols and payouts.
-- `/mines <bet> [mines] [money|rubies]` — reveal tiles on a 5x5 board; the multiplier climbs with each safe tile, cash out any time before hitting a mine.
+- `/slots <bet>` — animated 3-reel slot GUI with weighted symbols and payouts.
+- `/mines <bet> [mines]` — reveal tiles on a 5x5 board; the multiplier climbs with each safe tile, cash out any time before hitting a mine.
 - `/jackpot [bet]` — progressive pool; each entry feeds the pot and rolls for the whole thing.
-- `/havoccasino` (`/hc`) — admin: reload config, manage the pool, grant/take rubies.
-- Vault is a **soft dependency**: without it, rubies still work.
+- `/crates [name]` — CS:GO-style crate opening: pay the crate cost, watch the reel spin, and win a weighted money multiple (or bust). Crates are defined in `crates.yml`.
+- `/havoccasino` (`/hc`) — admin: reload config and manage the jackpot pool.
 - MiniMessage-styled output, configurable bets, weights, odds and prefix.
 - **Customizable messages** in `messages.yml` with placeholders (internal `{tokens}` + PlaceholderAPI).
 - **Per-player message toggle** — each player turns HavocCasino messages on/off for themselves via a green (ON) / red (OFF) button (`/hc messages`).
@@ -19,7 +18,7 @@ board, and a progressive jackpot, playable with **money** (via Vault) or built-i
 
 - Java 21
 - Purpur or Paper 1.21.x
-- (Optional) Vault + an economy plugin for `money`
+- **Vault** + an economy plugin (e.g. EssentialsX) — required; the plugin disables itself without an economy
 - (Optional) PlaceholderAPI for `%...%` placeholders in messages
 
 ## Building
@@ -67,7 +66,6 @@ support MiniMessage formatting and two kinds of placeholders:
   `{pool}`, `{chance}`.
 - **PlaceholderAPI** `%...%` placeholders (when PlaceholderAPI is installed), including
   this plugin's own expansion:
-  - `%havoccasino_rubies%` — the player's ruby balance
   - `%havoccasino_jackpot%` — formatted jackpot pool (`%havoccasino_jackpot_raw%` for the number)
   - `%havoccasino_messages%` — `ON` / `OFF` for that player
 
@@ -83,16 +81,18 @@ broadcasts and game results respect each player's choice individually.
 
 ## Config quick reference
 
-- `currency.default` — `money` or `rubies` when a player omits the currency.
 - `betting.min-bet` / `max-bet` — slot bet bounds.
 - `slots.two-match-multiplier` — payout when two reels match.
 - `mines.default-mines` / `min-mines` / `max-mines` — mine count bounds on the 5x5 board.
 - `mines.house-edge` — fraction shaved off the fair cash-out multiplier.
-- `jackpot.currency` — currency the pool is tracked in.
 - `jackpot.seed` — pool value after a win.
 - `jackpot.contribution-percent` — fraction of each entry added to the pool.
 - `jackpot.win-chance` — 0.0–1.0 chance an entry wins the pool.
 - `jackpot.min-entry` — minimum entry amount.
+
+Crates live in their own file, `crates.yml`: each crate has a `cost` and a weighted
+`rewards` table where `payout = cost * multiplier` (multiplier `0` is a bust). Tune
+weights vs. multipliers to set the house edge; the defaults sit near 5%.
 
 ## Permissions
 
@@ -101,5 +101,6 @@ broadcasts and game results respect each player's choice individually.
 | `havoccasino.slots`  | true    | `/slots`                  |
 | `havoccasino.mines`  | true    | `/mines`                  |
 | `havoccasino.jackpot`| true    | `/jackpot`                |
+| `havoccasino.crates` | true    | `/crates`                 |
 | `havoccasino.messages`| true   | `/hc messages` (self)     |
 | `havoccasino.admin`  | op      | `/havoccasino` admin cmds |

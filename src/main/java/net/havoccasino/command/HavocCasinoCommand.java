@@ -4,7 +4,6 @@ import net.havoccasino.HavocCasino;
 import net.havoccasino.gui.SettingsGui;
 import net.havoccasino.util.Msg;
 import net.havoccasino.util.Numbers;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -16,7 +15,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 public final class HavocCasinoCommand implements CommandExecutor, TabCompleter {
 
@@ -46,12 +44,11 @@ public final class HavocCasinoCommand implements CommandExecutor, TabCompleter {
         switch (args[0].toLowerCase()) {
             case "reload":
                 plugin.casinoConfig().reload();
-                Msg.force(sender, "<green>Configuration reloaded.");
+                plugin.crateManager().load();
+                Msg.force(sender, "<green>Configuration and crates reloaded.");
                 return true;
             case "jackpot":
                 return handleJackpot(sender, args);
-            case "rubies":
-                return handleRubies(sender, args);
             default:
                 help(sender);
                 return true;
@@ -107,48 +104,8 @@ public final class HavocCasinoCommand implements CommandExecutor, TabCompleter {
         }
         plugin.jackpotManager().save();
         Msg.force(sender, "<green>Jackpot pool is now <gold>"
-                + plugin.currencyService().format(plugin.casinoConfig().jackpotCurrency(), plugin.jackpotManager().pool())
+                + plugin.currencyService().format(plugin.jackpotManager().pool())
                 + "<green>.");
-        return true;
-    }
-
-    private boolean handleRubies(CommandSender sender, String[] args) {
-        // /hc rubies <give|take|set> <player> <amount>
-        if (args.length < 4) {
-            Msg.force(sender, "<gray>Usage: <white>/hc rubies <give|take|set> <player> <amount>");
-            return true;
-        }
-        Player target = Bukkit.getPlayerExact(args[2]);
-        if (target == null) {
-            Msg.force(sender, "<red>Player '" + args[2] + "' must be online.");
-            return true;
-        }
-        Double amount = Numbers.parsePositive(args[3]);
-        if (amount == null) {
-            Msg.force(sender, "<red>Invalid amount.");
-            return true;
-        }
-        UUID uuid = target.getUniqueId();
-        long value = (long) Math.floor(amount);
-        switch (args[1].toLowerCase()) {
-            case "give":
-                plugin.rubyStore().add(uuid, value);
-                break;
-            case "take":
-                plugin.rubyStore().withdraw(uuid, value);
-                break;
-            case "set":
-                plugin.rubyStore().set(uuid, value);
-                break;
-            default:
-                Msg.force(sender, "<gray>Usage: <white>/hc rubies <give|take|set> <player> <amount>");
-                return true;
-        }
-        plugin.rubyStore().save();
-        Msg.force(sender, "<green>" + target.getName() + " now has <white>"
-                + plugin.rubyStore().get(uuid) + " " + plugin.casinoConfig().rubyName() + "<green>.");
-        Msg.send(target, "<gray>Your ruby balance is now <white>"
-                + plugin.rubyStore().get(uuid) + " " + plugin.casinoConfig().rubyName() + "<gray>.");
         return true;
     }
 
@@ -156,7 +113,6 @@ public final class HavocCasinoCommand implements CommandExecutor, TabCompleter {
         Msg.force(sender, "<gold><bold>HavocCasino</bold> <gray>admin commands:");
         Msg.forceRaw(sender, "<gray>• <white>/hc reload");
         Msg.forceRaw(sender, "<gray>• <white>/hc jackpot <set|add> <amount>");
-        Msg.forceRaw(sender, "<gray>• <white>/hc rubies <give|take|set> <player> <amount>");
         Msg.forceRaw(sender, "<gray>• <white>/hc messages <gray>(toggle your messages)");
     }
 
@@ -169,7 +125,7 @@ public final class HavocCasinoCommand implements CommandExecutor, TabCompleter {
                 subs.add("messages");
             }
             if (sender.hasPermission("havoccasino.admin")) {
-                subs.addAll(Arrays.asList("reload", "jackpot", "rubies"));
+                subs.addAll(Arrays.asList("reload", "jackpot"));
             }
             return filter(subs, args[0]);
         }
@@ -182,16 +138,6 @@ public final class HavocCasinoCommand implements CommandExecutor, TabCompleter {
         }
         if (args.length == 2 && args[0].equalsIgnoreCase("jackpot")) {
             return filter(Arrays.asList("set", "add"), args[1]);
-        }
-        if (args.length == 2 && args[0].equalsIgnoreCase("rubies")) {
-            return filter(Arrays.asList("give", "take", "set"), args[1]);
-        }
-        if (args.length == 3 && args[0].equalsIgnoreCase("rubies")) {
-            List<String> names = new ArrayList<>();
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                names.add(p.getName());
-            }
-            return filter(names, args[2]);
         }
         return List.of();
     }
