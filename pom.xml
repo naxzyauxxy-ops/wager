@@ -15,7 +15,7 @@
         <java.version>21</java.version>
         <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <proguard.version>7.4.2</proguard.version>
+        <proguard.version>7.4.1</proguard.version>
     </properties>
 
     <repositories>
@@ -111,7 +111,6 @@
                     <injar>${project.build.finalName}.jar</injar>
                     <outjar>${project.build.finalName}.jar</outjar>
                     <inFilter>!module-info.class,!META-INF/versions/**</inFilter>
-                    <proguardVersion>${proguard.version}</proguardVersion>
                     <proguardInclude>${project.basedir}/proguard.conf</proguardInclude>
                     <libs>
                         <lib>${java.home}/jmods/java.base.jmod</lib>
@@ -122,14 +121,16 @@
                         <lib>${java.home}/jmods/java.management.jmod</lib>
                         <lib>${java.home}/jmods/java.xml.jmod</lib>
                     </libs>
-                    <dependencies>
-                        <dependency>
-                            <groupId>com.guardsquare</groupId>
-                            <artifactId>proguard-base</artifactId>
-                            <version>${proguard.version}</version>
-                        </dependency>
-                    </dependencies>
                 </configuration>
+                <!-- ProGuard must be a PLUGIN-level dependency so the plugin can
+                     find the proguard.ProGuard class in its own classpath. -->
+                <dependencies>
+                    <dependency>
+                        <groupId>com.guardsquare</groupId>
+                        <artifactId>proguard-base</artifactId>
+                        <version>${proguard.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>
